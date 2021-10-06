@@ -21,14 +21,11 @@ public:
 
 	bool full() {
 		for (int i = 0; i < n; i++) {
-			if (q[i] == NULL) return false;
+			if (front == 0 && back == n-1 ||
+				back == 0 && front == n-1 ||
+				back == front-1) return true;
 		}
-		return true;
-	}
-
-	int findEmpty() {
-		for (int i = 0; i < n; i++)
-			if (q[i] == NULL) return i;
+		return false;
 	}
 
 	void enqueue(int value)
@@ -46,7 +43,7 @@ public:
 					q[back] = value;
 				}
 				else if (back == n - 1 && !full()) {
-					back = findEmpty();
+					back = 0;
 					q[back] = value;
 				}
 			}
@@ -62,7 +59,7 @@ public:
 			}
 			else {
 				q[front] = NULL;
-				front = findEmpty();
+				front = 1;
 			}
 		}
 	}
@@ -91,8 +88,22 @@ public:
 		back = -1;
 	}
 
-	void size() {
-		cout <<  n << endl;
+
+	int size() {
+		int temp = 0;
+		if (front <= back && front != -1){
+			for (int i = front; i <= back; i++)
+				temp++;
+		}                                               // else if doesnt work correctly
+		else if (front != -1 && back < front) {
+			for (int i = front; i < n; i++)
+				temp++;
+			for (int i = back; i < front; i++) {
+				if (q[i] != NULL)
+					temp++;
+			}
+		}
+		return temp;
 	}
 
 	void reverse() {
@@ -129,7 +140,7 @@ public:
 		if (a == 5)
 			qu.clear();
 		if (a == 6)
-			qu.size();
+			cout << qu.size() << endl;
 		if (a == 7)
 			qu.reverse();
 	}
@@ -155,3 +166,4 @@ int main()
 	system("pause");
 	return 0;
 }
+
