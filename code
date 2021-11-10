@@ -12,19 +12,15 @@ public:
 	Queue()  //konstruktorius 
 	{
 		front = -1;
-		back = -1;
-		n = 10;
+		back = -4;
+		n = 5;
 		q = new int[n];
-		for (int i = 0; i < n; i++)
-			q[i] = NULL;
 	}
 
+	~Queue() { delete[] q; }
+
 	bool full() {
-		for (int i = 0; i < n; i++) {
-			if (front == 0 && back == n-1 ||
-				back == 0 && front == n-1 ||
-				back == front-1) return true;
-		}
+		if (back == n - 1 && front == 0 || back == front - 1) return true;
 		return false;
 	}
 
@@ -33,17 +29,17 @@ public:
 		if (full()) cout << "Queue is full" << endl;
 		else {
 			if (front == -1) {
-				front++;
+				front=0;
 				q[front] = value;
 				back = front;
 			}
 			else {
-				if (back != n - 1 && !full()) {
-					back++;
+				if (back == n - 1 && front != 0) {
+					back = 0;
 					q[back] = value;
 				}
-				else if (back == n - 1 && !full()) {
-					back = 0;
+				else {
+					back++;
 					q[back] = value;
 				}
 			}
@@ -53,68 +49,92 @@ public:
 	void dequeue() {
 		if (isEmpty()) cout << "Queue is empty" << endl;
 		else {
-			if (front != n - 1) {
-				q[front] = NULL;
+			if (front == back) {
+				q[front] = -1;
+				front = -1;
+				back = -4;
+			}
+			else if (front != n-1){
+				q[front] = -1;
 				front++;
 			}
 			else {
-				q[front] = NULL;
-				front = 1;
+				q[front] = -1;
+				front = 0;
 			}
 		}
 	}
 
 	void display()
 	{
-		for (int i = 0; i < n; i++)
-			if (q[i] != NULL) cout << q[i] << " ";
-		cout << endl;
+		if (isEmpty()) cout << "Queue is empty" << endl;
+		else {
+			if (front <= back) {
+			for (int i = front; i <= back; i++)
+				cout << q[i] << " ";
+			cout << endl;
+			}
+			else {
+				for (int i = front; i < n; i++)
+					cout << q[i] << " ";
+				for (int i = 0; i <= back; i++)
+					cout << q[i] << " ";
+				cout << endl;
+			}
+		}
 	}
 
 	void peek() {
+		if (isEmpty()) cout << "Queue is empty!" << endl;
+		else
 		cout << q[front] << endl;
 	}
 
 	bool isEmpty() {
-		for (int i = 0; i < n; i++)
-			if (q[i] != NULL) return false;
-		return true;
+		if (front == -1) return true;
+		return false;
 	}
 
 	void clear() {
-		for (int i = 0; i < n; i++)
-			q[i] = NULL;
 		front = -1;
-		back = -1;
+		back = -4;
 	}
 
 
 	int size() {
-		int temp = 0;
-		if (front <= back && front != -1){
-			for (int i = front; i <= back; i++)
-				temp++;
-		}                                               // else if doesnt work correctly
-		else if (front != -1 && back < front) {
-			for (int i = front; i < n; i++)
-				temp++;
-			for (int i = back; i < front; i++) {
-				if (q[i] != NULL)
-					temp++;
-			}
+		if (isEmpty()) return 0;
+		else {
+			if (front < back) return back - front + 1;
+			else return n - front + back + 1;
 		}
-		return temp;
 	}
 
 	void reverse() {
-		int a[10];
-		for (int i = 0; i < n; i++)
-			a[i] = q[i];
+		int* a = new int[n];
 		int k = 0;
-		for (int i = n - 1; i >= 0; i--) {
-			q[i] = a[k];
-			k++;
+		if (front < back) {
+			for (int i = front; i <= back; i++) {
+				a[k] = q[i];
+				k++;
+			}	
 		}
+		else {
+			for (int i = front; i < n; i++) {
+				a[k] = q[i];
+				k++;
+			}
+			for (int i = 0; i <= back; i++) {
+				a[k] = q[i];
+				k++;
+			}
+		}
+			
+		int j = 0;
+		for (int i = back; i >= front; i--) {
+			q[i] = a[j];
+			j++;
+		}
+		delete[] a;
 	}
 
 };
